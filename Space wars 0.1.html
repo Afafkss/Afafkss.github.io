@@ -1,0 +1,1648 @@
+<html>
+<head>
+<title>Game space</title>
+</head>
+<body>
+<canvas id = "canvas" width = "320" height = "480"></canvas>
+<style>
+body{
+background:url("1.gif") no-repeat center center fixed;
+background-size:cover;
+}
+#canvas{
+border:2px solid black;
+padding-left: 0;
+padding-right: 0;
+margin-left: auto;
+margin-right: auto;
+margin-top: 0px;
+display: block;
+width: 320px;
+}
+</style>
+<script>
+document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+var xp = 128;
+var yp = 448;
+var asteroids = [];
+var t = 0;
+var spacespeed = 3;
+var up = 0;
+var left = 0;
+var right = 0;
+var down = 0;
+var scene = 0;
+var score = 0;
+var health = 3;
+var bullets = [];
+var by = 0;
+var by1 = -480;
+var particles = [];
+var enemyparticles = [];
+var x = 0;
+var y = 220;
+var xss = 5;
+var yss = 455;
+var levels = 2;
+var lives = 0;
+var played = 0;
+var win = 0;
+var selects = 0;
+var time = 1000;
+var explosives = [];
+var qs = 0;
+var enemybullets = [];
+var bossx = 110;
+var bossy = -239;
+var bossHP = 100;
+var bossattacks = 0;
+var bosslefts = 0;
+var bossrights = 0;
+var zoomss = 1;
+var asteroidsspeedmax = 9;
+var asteroidsspeedmin = 2;
+var bossHPs = 100;
+var ateroidsspawn = 27;
+var times = 1000;
+var firespeeds = 20;
+var damage = 1;
+var healths = 3;
+var firedistances = 200;
+var firespeedsUp = 0;
+var damagesUp = 0;
+var healthsUp = 0;
+var firedistancesUp = 0;
+var firespeedsPrice = 4000;
+var damagesPrice = 4000;
+var healthsPrice = 4000;
+var firedistancesPrice = 4000;
+var spaceship1 = new Image();
+spaceship1.src = "space1.png";
+var asteroid = new Image();
+asteroid.src = "asteroid.png";
+var bullet = new Image();
+bullet.src = "bullet.png";
+var background = new Image();
+background.src = "background.png";
+var picksss = new Image();
+picksss.src = "pick.png";
+var particle1 = new Image();
+particle1.src = "particle1.png";
+var particle2 = new Image();
+particle2.src = "particle2.png";
+var select = new Image();
+select.src = "Select1.png";
+var asteroid1 = new Image();
+asteroid1.src = "asteroid1.png";
+var asteroid2 = new Image();
+asteroid2.src = "asteroid2.png";
+var asteroid3 = new Image();
+asteroid3.src = "asteroid3.png";
+var particle3 = new Image();
+particle3.src = "particle3.png";
+var particle4 = new Image();
+particle4.src = "particle4.png";
+var particle5 = new Image();
+particle5.src = "particle5.png";
+var particle6 = new Image();
+particle6.src = "particle6.png";
+var explosive = new Image();
+explosive.src = "explosivss.png";
+var boss1 = new Image()
+boss1.src = "boss1.png";
+var enemybullet = new Image();
+enemybullet.src = "asteroidbullets1.png"
+var shoots = new Audio();
+shoots.src = "Laser_Shoot.wav"
+var explosions = new Audio();
+explosions.src = "Explosion.wav";
+var explosions1 = new Audio();
+explosions1.src = "Explosion1.wav";
+var picks = new Audio();
+picks.src = "Blip_Select.wav";
+var picksselect = new Audio();
+picksselect.src = "Pickup_Coin2.wav";
+var theme2 = new Audio();
+theme2.src = "theme2.mp3"
+document.addEventListener("keydown",function(e){
+if(e.keyCode == 87){
+if(scene == 0 && selects > 0){
+selects-=1;
+y-=32;
+picks.play()
+}
+if(scene == -4 && selects > 0){
+selects-=1;
+y-=32;
+picks.play()
+}
+if(scene == 1 ){
+if(t > 10 && selects > 0){
+if(selects == 0 || selects == 1 || selects == 2 || selects == 3 || selects == 4){
+y-=56;
+}
+if(selects == 5){
+y-=25;
+}
+selects-=1;
+}
+}
+up = 1;
+}
+if(e.keyCode == 65){
+left = 2;
+}
+if(e.keyCode == 68){
+if(scene == 0){
+if(selects == 0){
+x = 0;
+y = 71;
+scene = 1;
+selects = 0;
+picksselect.play();
+played = 1;
+}
+if(selects == 1){
+y = 337;
+scene = -1;
+t = 0;
+picksselect.play();
+}
+if(selects == 2){
+x = 0;
+y = 220;
+selects = 0;
+scene = -4;
+t = 0;
+picksselect.play();
+}
+}
+if(scene == -4){
+if(selects == 0){
+if(t > 10){
+zoomss+=0.5;
+document.body.style.zoom = zoomss;
+picksselect.play();
+}
+}
+if(selects == 1){
+if(t > 10){
+zoomss-=0.5;
+document.body.style.zoom = zoomss;
+picksselect.play();
+}
+}
+if(selects == 2){
+x = 0;
+y = 220;
+selects = 0;
+scene = 0;
+picksselect.play();
+}
+}
+if(scene == 1){
+if(selects== 0){
+if(t > 10){
+if(damagesUp != 3 && score >= damagesPrice){
+damage+=1;
+score-=damagesPrice;
+damagesPrice+=1000;
+damagesUp+=1;
+picksselect.play();
+}
+}
+}
+if(selects == 1){
+if(t > 10){
+if(firespeedsUp != 3 && score >= firespeedsPrice){
+firespeeds-=4;
+firespeedsUp+=1;
+score-=firespeedsPrice;
+firespeedsPrice+=1000;
+picksselect.play();
+}
+}
+}
+if(selects == 2){
+if(t > 10){
+if(firedistancesUp != 3 && score >= firedistancesPrice){
+firedistances+=50;
+firedistancesUp+=1;
+score-=firedistancesPrice;
+firedistancesPrice+=1000;
+picksselect.play();
+}
+}
+}
+if(selects == 3){
+if(t > 10){
+if(healthsUp != 3 && score >= healthsPrice){
+healths+=1;
+healthsUp+=1;
+score-=healthsPrice;
+healthsPrice+=1000;
+picksselect.play();
+}
+}
+}
+if(selects == 4){
+if(t > 10){
+asteroids = [];	
+bullets = [];
+particles = [];
+enemyparticles = [];
+if(levels > 5){
+levels = 2;
+asteroidsspeedmax +=1;
+asteroidsspeedmin += 1;
+bossHPs+=10;
+if(ateroidsspawn > 10){
+ateroidsspawn-=1;
+}
+}
+scene = levels;
+lives = 0;
+health = healths;
+win = 0;
+t = 0;
+times+=10;
+xp = 128;
+yp = 448;
+time = times;
+enemybullets = [];
+bossHP = bossHPs;
+picksselect.play();
+}
+}
+if(selects == 5){
+x = 0;
+y = 220;
+scene = 0;
+selects = 0;
+picksselect.play();
+}
+}
+right = 3;
+}
+if(scene == -1){
+if(t > 10){
+x = 0;
+y = 220;
+selects = 0;
+scene = 0;
+picksselect.play();
+}
+right = 3;
+}
+if(e.keyCode == 83){
+if(scene == 0 && selects < 2){
+selects+=1;
+y+=32
+picks.play();
+}
+if(scene == -4 && selects < 2){
+selects+=1;
+y+=32
+picks.play();
+}
+if(scene == 1){
+if(t > 10 && selects < 5){
+if(selects == 0 || selects == 1 || selects == 2 || selects == 3){
+y+=56;
+}
+if(selects == 4 || selects == 5){
+y+=25;
+}
+selects+=1;
+}
+}
+down = 4;
+}
+});
+document.addEventListener("keyup",function(e){
+if(e.keyCode == 87){
+up = 0;
+}
+if(e.keyCode == 65){
+left = 0;
+}
+if(e.keyCode == 68){
+right = 0;
+}
+if(e.keyCode == 83){
+down = 0;
+}
+});
+function game(){
+if(scene == 0){
+ctx.clearRect(0,0,320,480);
+ctx.drawImage(background,0,0,480,320,0,by,320,480);
+ctx.drawImage(background,0,0,480,320,0,by1,320,480);
+ctx.beginPath();
+ctx.font = "25px Serif";
+ctx.fillStyle = "blue";
+ctx.strokeStyle = "white";
+/*ctx.drawImage(select,0,0,16,16,0,221,320,31);
+ctx.drawImage(select,0,0,16,16,0,35,320,31);
+ctx.drawImage(select,0,0,16,16,0,445,320,31);
+ctx.drawImage(select,0,0,16,16,0,320,320,31);*/
+ctx.fillStyle = "white";
+ctx.fillText("Play",150,240);
+ctx.fillText("About game",110,272);
+ctx.fillText("Settings",132,304);
+ctx.fillText("W:Up",0,475);
+ctx.fillText("S:Down",110,475);
+ctx.fillText("D:Select",229,475);
+ctx.strokeRect(x,y,320,25);
+ctx.closePath();
+ctx.beginPath();
+ctx.font = "40px Serif";
+ctx.strokeStyle = "white";
+ctx.fillText("Arcade",110,40);
+ctx.closePath();
+if(by >= 480){
+by=-480;
+}
+if(by1 >= 480){
+by1=-480;
+}
+by+=5;
+by1+=5;
+}
+if(scene == -1){
+ctx.clearRect(0,0,320,480);
+ctx.drawImage(background,0,0,480,320,0,by,320,480);
+ctx.drawImage(background,0,0,480,320,0,by1,320,480);
+ctx.fillStyle = "white";
+ctx.font = "25px Serif";
+ctx.fillText("Boss sprite taken from the site:",0,240);
+ctx.font = "15px Serif";
+ctx.fillText("https://www.pinterest.com/pin/74661306303188565/",0,255);
+ctx.font = "26px Serif";
+ctx.fillText("Special thanks to:",89,281);
+ctx.fillText("_TET_TRIO_",110,307);
+ctx.fillText("Raxfordini",120,333);
+ctx.font = "25px Serif";
+ctx.fillText("W:Up",0,475);
+ctx.fillText("S:Down",110,475);
+ctx.fillText("D:Select",229,475);
+ctx.fillText("Back",152,358);
+ctx.font = "40px Serif";
+ctx.fillText("Arcade",110,40);
+ctx.strokeRect(x,y,320,25);
+if(by >= 480){
+by=-480;
+}
+if(by1 >= 480){
+by1=-480;
+}
+by+=5;
+by1+=5;
+}
+if(scene == -2){
+ctx.clearRect(0,0,320,480);
+ctx.drawImage(background,0,0,480,320,0,by,320,480);
+ctx.drawImage(background,0,0,480,320,0,by1,320,480);
+ctx.fillStyle = "red";
+ctx.font = "70px Serif";
+ctx.fillText("Game over",0,245);
+healths = 3;
+firedistances = 200;
+damage = 1;
+firespeeds = 20;
+firespeedsUp = 0;
+damagesUp = 0;
+healthsUp = 0;
+firedistancesUp = 0;
+firespeedsPrice = 4000;
+damagesPrice = 4000;
+healthsPrice = 4000;
+firedistancesPrice = 4000;
+if(t == 200){
+scene = 1;
+}
+if(by >= 480){
+by=-480;
+}
+if(by1 >= 480){
+by1=-480;
+}
+by+=5;
+by1+=5;
+}
+if(scene == 1){
+ctx.clearRect(0,0,320,480);
+ctx.drawImage(background,0,0,480,320,0,by,320,480);
+ctx.drawImage(background,0,0,480,320,0,by1,320,480);
+ctx.fillStyle = "white";
+ctx.beginPath();
+ctx.font = "40px Serif";
+ctx.fillStyle = "white";
+ctx.fillText("Shop",131,40);
+ctx.font = "25px Serif";
+ctx.fillText("Score: " + score,0,60);
+ctx.fillText("W:Up",0,475);
+ctx.fillText("S:Down",110,475);
+ctx.fillText("D:Select",229,475);
+ctx.fillText("Damage",135,86);
+ctx.strokeRect(135,86,90,32);
+ctx.fillText("Firespeed",130,143);
+ctx.strokeRect(135,143,90,32);
+ctx.fillText("Range",150,200);
+ctx.strokeRect(135,200,90,32);
+ctx.fillText("HP",159,250);
+ctx.strokeRect(135,250,90,32);
+ctx.fillText("Start",149,310);
+ctx.fillText("Back",149,336);
+ctx.fillText(damagesPrice,153,115);
+ctx.fillText(firespeedsPrice,153,175);
+ctx.fillText(firedistancesPrice,153,231);
+ctx.fillText(healthsPrice,153,281);
+if(selects == 0 || selects == 1 || selects == 2 || selects == 3){
+ctx.strokeRect(x,y,320,56);
+}
+if(selects == 4 || selects == 5){
+ctx.strokeRect(x,y,320,25);
+}
+ctx.closePath();
+if(by >= 480){
+by=-480;
+}
+if(by1 >= 480){
+by1=-480;
+}
+by+=5;
+by1+=5;
+}
+if(scene == -4){
+ctx.clearRect(0,0,320,480);
+ctx.drawImage(background,0,0,480,320,0,by,320,480);
+ctx.drawImage(background,0,0,480,320,0,by1,320,480);
+ctx.beginPath();
+ctx.font = "25px Serif";
+ctx.fillStyle = "blue";
+ctx.strokeStyle = "white";
+/*ctx.drawImage(select,0,0,16,16,0,221,320,31);
+ctx.drawImage(select,0,0,16,16,0,35,320,31);
+ctx.drawImage(select,0,0,16,16,0,445,320,31);
+ctx.drawImage(select,0,0,16,16,0,320,320,31);*/
+ctx.fillStyle = "white";
+ctx.fillText("Enlarge screen",101,240);
+ctx.fillText("Reduce screen",101,272);
+ctx.fillText("Back",152,304);
+ctx.fillText("W:Up",0,475);
+ctx.fillText("S:Down",110,475);
+ctx.fillText("D:Select",229,475);
+ctx.strokeRect(x,y,320,25);
+ctx.closePath();
+ctx.beginPath();
+ctx.font = "40px Serif";
+ctx.strokeStyle = "white";
+ctx.fillText("Arcade",110,40);
+ctx.closePath();
+if(by >= 480){
+by=-480;
+}
+if(by1 >= 480){
+by1=-480;
+}
+by+=5;
+by1+=5;
+}
+if(scene == 2){
+ctx.clearRect(0,0,320,480);
+ctx.fillRect(0,0,320,480);
+ctx.drawImage(background,0,0,480,320,0,by,320,480);
+ctx.drawImage(background,0,0,480,320,0,by1,320,480);
+if(lives == 0){
+ctx.drawImage(spaceship1,0,0,16,16,xp,yp,32,32);
+}
+particles.push({x:xp+Math.random()*(30-2)+2,y:yp+32,coordinat:yp+64});
+if(win == 0){
+if(t%firespeeds == 0){
+if(lives == 0){
+bullets.push({x:xp + 10,y:yp,distances:yp-firedistances});
+shoots.play();
+}
+}
+if(t%ateroidsspawn == 0){
+asteroids.push({x:Math.floor(Math.random()*(288-1)+1),y:-32,speed:Math.floor(Math.random()*(asteroidsspeedmax-asteroidsspeedmin)+asteroidsspeedmin),angle:1,id:Math.floor(Math.random()*(5-1)+1)});
+}
+for(i in bullets){
+ctx.drawImage(bullet,0,0,16,16,bullets[i].x,bullets[i].y,8,8);
+bullets[i].y-=10;
+for(j in asteroids){
+if(asteroids[j].x + 32 >= bullets[i].x && asteroids[j].x <= bullets[i].x+8){
+if(asteroids[j].y + 32 >= bullets[i].y && asteroids[j].y <= bullets[i].y+8){
+score+=100;
+enemyparticles.push({x:asteroids[j].x+16,y:asteroids[j].y+16,directions:1,id:Math.floor(Math.random()*(5-1)+1)});
+enemyparticles.push({x:asteroids[j].x+16,y:asteroids[j].y+16,directions:5,id:Math.floor(Math.random()*(5-1)+1)});
+enemyparticles.push({x:asteroids[j].x+16,y:asteroids[j].y+16,directions:2,id:Math.floor(Math.random()*(5-1)+1)});
+enemyparticles.push({x:asteroids[j].x+16,y:asteroids[j].y+16,directions:6,id:Math.floor(Math.random()*(5-1)+1)});
+enemyparticles.push({x:asteroids[j].x+16,y:asteroids[j].y+16,directions:3,id:Math.floor(Math.random()*(5-1)+1)});
+enemyparticles.push({x:asteroids[j].x+16,y:asteroids[j].y+16,directions:7,id:Math.floor(Math.random()*(5-1)+1)});
+enemyparticles.push({x:asteroids[j].x+16,y:asteroids[j].y+16,directions:4,id:Math.floor(Math.random()*(5-1)+1)});
+enemyparticles.push({x:asteroids[j].x+16,y:asteroids[j].y+16,directions:8,id:Math.floor(Math.random()*(5-1)+1)});
+explosives.push({x:asteroids[j].x,y:asteroids[j].y,time:15,ex:0,ey:100});
+bullets.splice(i,1);
+asteroids.splice(j,1);
+explosions.play();
+}
+}
+}
+if(bullets[i].y <= bullets[i].distances){
+bullets.splice(i,1);
+}
+}
+for(i in asteroids){
+dx = asteroids[i].x+16;
+dy = asteroids[i].y+16;
+ctx.save();
+ctx.translate(dx,dy);
+ctx.rotate(asteroids[i].angle * Math.PI / 180);
+ctx.translate(-dx,-dy);
+if(asteroids[i].id == 1){
+ctx.drawImage(asteroid,0,0,16,16,asteroids[i].x,asteroids[i].y,32,32);
+}
+if(asteroids[i].id == 2){
+ctx.drawImage(asteroid1,0,0,16,16,asteroids[i].x,asteroids[i].y,32,32);
+}
+if(asteroids[i].id == 3){
+ctx.drawImage(asteroid2,0,0,16,16,asteroids[i].x,asteroids[i].y,32,32);
+}
+if(asteroids[i].id == 4){
+ctx.drawImage(asteroid3,0,0,16,16,asteroids[i].x,asteroids[i].y,32,32);
+}
+ctx.restore()
+asteroids[i].y += asteroids[i].speed;
+if(asteroids[i].x + 32 >= xp && asteroids[i].x <= xp+32){
+if(asteroids[i].y + 32 >= yp && asteroids[i].y <= yp+32){
+enemyparticles.push({x:xp+16,y:yp+16,directions:1,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:5,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:2,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:6,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:3,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:7,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:4,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:8,id:6});
+asteroids.splice(i,1);
+health-=1;
+explosions1.play();
+}
+}
+if(asteroids[i].y >= 480){
+asteroids.splice(i,1);
+}
+asteroids[i].angle+=1;
+}
+for(i in particles){
+ctx.beginPath();
+ctx.fillStyle = "yellow";
+ctx.fillRect(particles[i].x,particles[i].y,2,2);
+ctx.closePath();
+particles[i].y+=3;
+if(particles[i].y >= particles[i].coordinat){
+particles.splice(i,1);
+}
+}
+for(i in enemyparticles){
+if(enemyparticles[i].id == 1){
+ctx.drawImage(particle2,0,0,8,8,enemyparticles[i].x,enemyparticles[i].y,8,8);
+}
+if(enemyparticles[i].id == 2){
+ctx.drawImage(particle3,0,0,8,8,enemyparticles[i].x,enemyparticles[i].y,8,8);
+}
+if(enemyparticles[i].id == 3){
+ctx.drawImage(particle6,0,0,8,8,enemyparticles[i].x,enemyparticles[i].y,8,8);
+}
+if(enemyparticles[i].id == 4){
+ctx.drawImage(particle5,0,0,8,8,enemyparticles[i].x,enemyparticles[i].y,8,8);
+}
+if(enemyparticles[i].id == 6){
+ctx.drawImage(particle1,0,0,8,8,enemyparticles[i].x,enemyparticles[i].y,8,8);
+}
+if(enemyparticles[i].directions == 1){
+enemyparticles[i].y-=10;
+}
+if(enemyparticles[i].directions == 2){
+enemyparticles[i].x-=10;
+}
+if(enemyparticles[i].directions == 3){
+enemyparticles[i].x+=10;
+}
+if(enemyparticles[i].directions == 4){
+enemyparticles[i].y+=10;
+}
+if(enemyparticles[i].directions == 5){
+enemyparticles[i].x+=10;
+enemyparticles[i].y-=10;
+}
+if(enemyparticles[i].directions == 6){
+enemyparticles[i].x+=10;
+enemyparticles[i].y+=10;
+}
+if(enemyparticles[i].directions == 7){
+enemyparticles[i].x-=10;
+enemyparticles[i].y+=10;
+}
+if(enemyparticles[i].directions == 8){
+enemyparticles[i].x-=10;
+enemyparticles[i].y-=10;
+}
+}
+}
+for(i in explosives){
+ctx.drawImage(explosive,explosives[i].ex,explosives[i].ey,100,100,explosives[i].x,explosives[i].y,32,32);
+if(t%1 == 0){
+explosives[i].ex+=100;
+}
+if(explosives[i].ex >= 600){
+explosives[i].ex=0;
+explosives[i].ey+=100;
+}
+if(explosives[i].ey >= 900){
+explosives.splice(i,1);
+}
+}
+ctx.beginPath();
+ctx.fillStyle = "white";
+ctx.fillRect(0,0,320,20);
+ctx.closePath();
+ctx.beginPath();
+ctx.font = "20px Serif";
+ctx.fillStyle = "black";
+ctx.fillText("Score: " + score,5,16);
+ctx.fillText("Lives: " + health,240,16);
+ctx.fillText("Time:" + time,150,16);
+ctx.closePath();
+if(win == 0){
+if(up == 1){
+if(yp-spacespeed <= 20){
+yp=yp;
+}else{
+yp-=spacespeed;
+}
+}
+if(left == 2){
+if(xp-spacespeed <= 0){
+xp=xp;
+}else{
+xp-=spacespeed;
+}
+}
+if(right == 3){
+if(xp+spacespeed >= 288){
+xp=xp;
+}else{
+xp+=spacespeed;
+}
+}
+if(down == 4){
+if(yp+spacespeed >= 448){
+yp=yp;
+}else{
+yp+=spacespeed;
+}
+}
+}
+ctx.fillStyle = "black";
+if(health <= 0){
+levels = 2;
+time = 1000;
+score = 0;
+if(t%50 == 0){
+t = 0;
+scene = -2;
+}
+}
+if(by >= 480){
+by=-480;
+}
+if(by1 >= 480){
+by1=-480;
+}
+by+=5;
+by1+=5;
+if(win == 1){
+for(i in asteroids){
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:1,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:5,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:2,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:6,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:3,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:7,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:4,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:8,id:0});
+asteroids.splice(i,1);
+explosions1.play();
+}
+for(i in particles){
+ctx.beginPath();
+ctx.fillStyle = "yellow";
+ctx.fillRect(particles[i].x,particles[i].y,2,2);
+ctx.closePath();
+particles[i].y+=3;
+if(particles[i].y >= particles[i].coordinat){
+particles.splice(i,1);
+}
+}
+for(i in enemyparticles){
+if(enemyparticles[i].id == 0){
+ctx.drawImage(particle2,0,0,8,8,enemyparticles[i].x,enemyparticles[i].y,8,8);
+}
+if(enemyparticles[i].id == 1){
+ctx.drawImage(particle1,0,0,8,8,enemyparticles[i].x,enemyparticles[i].y,8,8);
+}
+if(enemyparticles[i].directions == 1){
+enemyparticles[i].y-=10;
+}
+if(enemyparticles[i].directions == 2){
+enemyparticles[i].x-=10;
+}
+if(enemyparticles[i].directions == 3){
+enemyparticles[i].x+=10;
+}
+if(enemyparticles[i].directions == 4){
+enemyparticles[i].y+=10;
+}
+if(enemyparticles[i].directions == 5){
+enemyparticles[i].x+=10;
+enemyparticles[i].y-=10;
+}
+if(enemyparticles[i].directions == 6){
+enemyparticles[i].x+=10;
+enemyparticles[i].y+=10;
+}
+if(enemyparticles[i].directions == 7){
+enemyparticles[i].x-=10;
+enemyparticles[i].y+=10;
+}
+if(enemyparticles[i].directions == 8){
+enemyparticles[i].x-=10;
+enemyparticles[i].y-=10;
+}
+}
+yp-=4;
+if(yp+32 < 0){
+scene = 1;
+}
+}
+if(time == 0){
+win = 1;
+levels+=1;
+}
+}
+if(scene == 3){
+ctx.clearRect(0,0,320,480);
+ctx.fillRect(0,0,320,480);
+ctx.drawImage(background,0,0,480,320,0,by,320,480);
+ctx.drawImage(background,0,0,480,320,0,by1,320,480);
+if(lives == 0){
+ctx.drawImage(spaceship1,0,0,16,16,xp,yp,32,32);
+}
+particles.push({x:xp+Math.random()*(30-2)+2,y:yp+32,coordinat:yp+64});
+if(win == 0){
+if(t%firespeeds == 0){
+if(lives == 0){
+bullets.push({x:xp + 10,y:yp,distances:yp-firedistances});
+shoots.play();
+}
+}
+if(t%(ateroidsspawn+7) == 0){
+qs = Math.floor(Math.random()*(3-1)+1)
+if(qs == 1){
+asteroids.push({x:Math.floor(Math.random()*(288-32)+32),y:-32,speed:Math.floor(Math.random()*(9-2)+2),angle:1,id:Math.floor(Math.random()*(5-1)+1),dx:Math.floor(Math.random()*(4-1)+1),dy:Math.floor(Math.random()*(4-1)+1)});
+}
+if(qs == 2){
+asteroids.push({x:Math.floor(Math.random()*(288-32)+32),y:-32,speed:Math.floor(Math.random()*(9-2)+2),angle:1,id:Math.floor(Math.random()*(5-1)+1),dx:-Math.floor(Math.random()*(4-1)+1),dy:Math.floor(Math.random()*(4-1)+1)});
+}
+}
+for(i in bullets){
+ctx.drawImage(bullet,0,0,16,16,bullets[i].x,bullets[i].y,8,8);
+bullets[i].y-=10;
+for(j in asteroids){
+if(asteroids[j].x + 32 >= bullets[i].x && asteroids[j].x <= bullets[i].x+8){
+if(asteroids[j].y + 32 >= bullets[i].y && asteroids[j].y <= bullets[i].y+8){
+score+=100;
+enemyparticles.push({x:asteroids[j].x+16,y:asteroids[j].y+16,directions:1,id:Math.floor(Math.random()*(5-1)+1)});
+enemyparticles.push({x:asteroids[j].x+16,y:asteroids[j].y+16,directions:5,id:Math.floor(Math.random()*(5-1)+1)});
+enemyparticles.push({x:asteroids[j].x+16,y:asteroids[j].y+16,directions:2,id:Math.floor(Math.random()*(5-1)+1)});
+enemyparticles.push({x:asteroids[j].x+16,y:asteroids[j].y+16,directions:6,id:Math.floor(Math.random()*(5-1)+1)});
+enemyparticles.push({x:asteroids[j].x+16,y:asteroids[j].y+16,directions:3,id:Math.floor(Math.random()*(5-1)+1)});
+enemyparticles.push({x:asteroids[j].x+16,y:asteroids[j].y+16,directions:7,id:Math.floor(Math.random()*(5-1)+1)});
+enemyparticles.push({x:asteroids[j].x+16,y:asteroids[j].y+16,directions:4,id:Math.floor(Math.random()*(5-1)+1)});
+enemyparticles.push({x:asteroids[j].x+16,y:asteroids[j].y+16,directions:8,id:Math.floor(Math.random()*(5-1)+1)});
+explosives.push({x:asteroids[j].x,y:asteroids[j].y,time:15,ex:0,ey:100});
+bullets.splice(i,1);
+asteroids.splice(j,1);
+explosions.play();
+}
+}
+}
+if(bullets[i].y <= bullets[i].distances){
+bullets.splice(i,1);
+}
+}
+for(i in asteroids){
+dx = asteroids[i].x+16;
+dy = asteroids[i].y+16;
+ctx.save();
+ctx.translate(dx,dy);
+ctx.rotate(asteroids[i].angle * Math.PI / 180);
+ctx.translate(-dx,-dy);
+if(asteroids[i].id == 1){
+ctx.drawImage(asteroid,0,0,16,16,asteroids[i].x,asteroids[i].y,32,32);
+}
+if(asteroids[i].id == 2){
+ctx.drawImage(asteroid1,0,0,16,16,asteroids[i].x,asteroids[i].y,32,32);
+}
+if(asteroids[i].id == 3){
+ctx.drawImage(asteroid2,0,0,16,16,asteroids[i].x,asteroids[i].y,32,32);
+}
+if(asteroids[i].id == 4){
+ctx.drawImage(asteroid3,0,0,16,16,asteroids[i].x,asteroids[i].y,32,32);
+}
+ctx.restore()
+asteroids[i].x += asteroids[i].dx;
+asteroids[i].y += asteroids[i].dy;
+if(asteroids[i].x + 32 >= 320){
+asteroids[i].dx = -asteroids[i].dx;
+}
+if(asteroids[i].x <= 0){
+asteroids[i].dx = -asteroids[i].dx;
+}
+if(asteroids[i].x + 32 >= xp && asteroids[i].x <= xp+32){
+if(asteroids[i].y + 32 >= yp && asteroids[i].y <= yp+32){
+enemyparticles.push({x:xp+16,y:yp+16,directions:1,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:5,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:2,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:6,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:3,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:7,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:4,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:8,id:6});
+asteroids.splice(i,1);
+health-=1;
+explosions1.play();
+}
+}
+if(asteroids[i].y >= 480){
+asteroids.splice(i,1);
+}
+asteroids[i].angle+=1;
+}
+for(i in particles){
+ctx.beginPath();
+ctx.fillStyle = "yellow";
+ctx.fillRect(particles[i].x,particles[i].y,2,2);
+ctx.closePath();
+particles[i].y+=3;
+if(particles[i].y >= particles[i].coordinat){
+particles.splice(i,1);
+}
+}
+for(i in enemyparticles){
+if(enemyparticles[i].id == 1){
+ctx.drawImage(particle2,0,0,8,8,enemyparticles[i].x,enemyparticles[i].y,8,8);
+}
+if(enemyparticles[i].id == 2){
+ctx.drawImage(particle3,0,0,8,8,enemyparticles[i].x,enemyparticles[i].y,8,8);
+}
+if(enemyparticles[i].id == 3){
+ctx.drawImage(particle6,0,0,8,8,enemyparticles[i].x,enemyparticles[i].y,8,8);
+}
+if(enemyparticles[i].id == 4){
+ctx.drawImage(particle5,0,0,8,8,enemyparticles[i].x,enemyparticles[i].y,8,8);
+}
+if(enemyparticles[i].id == 6){
+ctx.drawImage(particle1,0,0,8,8,enemyparticles[i].x,enemyparticles[i].y,8,8);
+}
+if(enemyparticles[i].directions == 1){
+enemyparticles[i].y-=10;
+}
+if(enemyparticles[i].directions == 2){
+enemyparticles[i].x-=10;
+}
+if(enemyparticles[i].directions == 3){
+enemyparticles[i].x+=10;
+}
+if(enemyparticles[i].directions == 4){
+enemyparticles[i].y+=10;
+}
+if(enemyparticles[i].directions == 5){
+enemyparticles[i].x+=10;
+enemyparticles[i].y-=10;
+}
+if(enemyparticles[i].directions == 6){
+enemyparticles[i].x+=10;
+enemyparticles[i].y+=10;
+}
+if(enemyparticles[i].directions == 7){
+enemyparticles[i].x-=10;
+enemyparticles[i].y+=10;
+}
+if(enemyparticles[i].directions == 8){
+enemyparticles[i].x-=10;
+enemyparticles[i].y-=10;
+}
+}
+}
+for(i in explosives){
+ctx.drawImage(explosive,explosives[i].ex,explosives[i].ey,100,100,explosives[i].x,explosives[i].y,32,32);
+if(t%1 == 0){
+explosives[i].ex+=100;
+}
+if(explosives[i].ex >= 600){
+explosives[i].ex=0;
+explosives[i].ey+=100;
+}
+if(explosives[i].ey >= 900){
+explosives.splice(i,1);
+}
+}
+ctx.beginPath();
+ctx.fillStyle = "white";
+ctx.fillRect(0,0,320,20);
+ctx.closePath();
+ctx.beginPath();
+ctx.font = "20px Serif";
+ctx.fillStyle = "black";
+ctx.fillText("Score: " + score,5,16);
+ctx.fillText("Lives: " + health,240,16);
+ctx.fillText("Time:" + time,150,16);
+ctx.closePath();
+if(win == 0){
+if(up == 1){
+if(yp-spacespeed <= 20){
+yp=yp;
+}else{
+yp-=spacespeed;
+}
+}
+if(left == 2){
+if(xp-spacespeed <= 0){
+xp=xp;
+}else{
+xp-=spacespeed;
+}
+}
+if(right == 3){
+if(xp+spacespeed >= 288){
+xp=xp;
+}else{
+xp+=spacespeed;
+}
+}
+if(down == 4){
+if(yp+spacespeed >= 448){
+yp=yp;
+}else{
+yp+=spacespeed;
+}
+}
+}
+ctx.fillStyle = "black";
+if(health <= 0){
+score = 0;
+levels = 2;
+time = 1000;
+if(t%50 == 0){
+t = 0;
+scene = -2;
+}
+}
+if(by >= 480){
+by=-480;
+}
+if(by1 >= 480){
+by1=-480;
+}
+by+=5;
+by1+=5;
+if(win == 1){
+for(i in asteroids){
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:1,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:5,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:2,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:6,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:3,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:7,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:4,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:8,id:0});
+asteroids.splice(i,1);
+explosions1.play();
+}
+for(i in particles){
+ctx.beginPath();
+ctx.fillStyle = "yellow";
+ctx.fillRect(particles[i].x,particles[i].y,2,2);
+ctx.closePath();
+particles[i].y+=3;
+if(particles[i].y >= particles[i].coordinat){
+particles.splice(i,1);
+}
+}
+for(i in enemyparticles){
+if(enemyparticles[i].id == 0){
+ctx.drawImage(particle2,0,0,8,8,enemyparticles[i].x,enemyparticles[i].y,8,8);
+}
+if(enemyparticles[i].id == 1){
+ctx.drawImage(particle1,0,0,8,8,enemyparticles[i].x,enemyparticles[i].y,8,8);
+}
+if(enemyparticles[i].directions == 1){
+enemyparticles[i].y-=10;
+}
+if(enemyparticles[i].directions == 2){
+enemyparticles[i].x-=10;
+}
+if(enemyparticles[i].directions == 3){
+enemyparticles[i].x+=10;
+}
+if(enemyparticles[i].directions == 4){
+enemyparticles[i].y+=10;
+}
+if(enemyparticles[i].directions == 5){
+enemyparticles[i].x+=10;
+enemyparticles[i].y-=10;
+}
+if(enemyparticles[i].directions == 6){
+enemyparticles[i].x+=10;
+enemyparticles[i].y+=10;
+}
+if(enemyparticles[i].directions == 7){
+enemyparticles[i].x-=10;
+enemyparticles[i].y+=10;
+}
+if(enemyparticles[i].directions == 8){
+enemyparticles[i].x-=10;
+enemyparticles[i].y-=10;
+}
+}
+yp-=4;
+if(yp+32 < 0){
+scene = 1;
+}
+}
+if(time == 0){
+win = 1;
+levels+=1;
+}
+}
+if(scene == 4){
+ctx.clearRect(0,0,320,480);
+ctx.fillRect(0,0,320,480);
+ctx.drawImage(background,0,0,480,320,0,by,320,480);
+ctx.drawImage(background,0,0,480,320,0,by1,320,480);
+if(lives == 0){
+ctx.drawImage(spaceship1,0,0,16,16,xp,yp,32,32);
+}
+particles.push({x:xp+Math.random()*(30-2)+2,y:yp+32,coordinat:yp+64});
+if(win == 0){
+if(t%firespeeds == 0){
+if(lives == 0){
+bullets.push({x:xp + 10,y:yp,distances:yp-firedistances});
+shoots.play();
+}
+}
+if(t%(ateroidsspawn + 15)== 0){
+qs = Math.floor(Math.random()*(3-1)+1)
+if(qs == 1){
+asteroids.push({x:Math.floor(Math.random()*(288-32)+32),y:-32,speed:Math.floor(Math.random()*(9-2)+2),angle:1,id:Math.floor(Math.random()*(5-1)+1),dx:Math.floor(Math.random()*(4-1)+1),dy:Math.floor(Math.random()*(4-1)+1)});
+}
+if(qs == 2){
+asteroids.push({x:Math.floor(Math.random()*(288-32)+32),y:-32,speed:Math.floor(Math.random()*(9-2)+2),angle:1,id:Math.floor(Math.random()*(5-1)+1),dx:-Math.floor(Math.random()*(4-1)+1),dy:Math.floor(Math.random()*(4-1)+1)});
+}
+}
+for(i in bullets){
+ctx.drawImage(bullet,0,0,16,16,bullets[i].x,bullets[i].y,8,8);
+bullets[i].y-=10;
+for(j in asteroids){
+if(asteroids[j].x + 32 >= bullets[i].x && asteroids[j].x <= bullets[i].x+8){
+if(asteroids[j].y + 32 >= bullets[i].y && asteroids[j].y <= bullets[i].y+8){
+score+=100;
+enemybullets.push({x:asteroids[j].x,y:asteroids[j].y,directions:1});
+enemybullets.push({x:asteroids[j].x,y:asteroids[j].y,directions:2});
+enemybullets.push({x:asteroids[j].x,y:asteroids[j].y,directions:3});
+explosives.push({x:asteroids[j].x,y:asteroids[j].y,time:15,ex:0,ey:100});
+bullets.splice(i,1);
+asteroids.splice(j,1);
+explosions.play();
+}
+}
+}
+if(bullets[i].y <= bullets[i].distances){
+bullets.splice(i,1);
+}
+}
+for(i in asteroids){
+dx = asteroids[i].x+16;
+dy = asteroids[i].y+16;
+ctx.save();
+ctx.translate(dx,dy);
+ctx.rotate(asteroids[i].angle * Math.PI / 180);
+ctx.translate(-dx,-dy);
+if(asteroids[i].id == 1){
+ctx.drawImage(asteroid,0,0,16,16,asteroids[i].x,asteroids[i].y,32,32);
+}
+if(asteroids[i].id == 2){
+ctx.drawImage(asteroid1,0,0,16,16,asteroids[i].x,asteroids[i].y,32,32);
+}
+if(asteroids[i].id == 3){
+ctx.drawImage(asteroid2,0,0,16,16,asteroids[i].x,asteroids[i].y,32,32);
+}
+if(asteroids[i].id == 4){
+ctx.drawImage(asteroid3,0,0,16,16,asteroids[i].x,asteroids[i].y,32,32);
+}
+ctx.restore()
+asteroids[i].x += asteroids[i].dx;
+asteroids[i].y += asteroids[i].dy;
+if(asteroids[i].x + 32 >= 320){
+asteroids[i].dx = -asteroids[i].dx;
+}
+if(asteroids[i].x <= 0){
+asteroids[i].dx = -asteroids[i].dx;
+}
+if(asteroids[i].x + 32 >= xp && asteroids[i].x <= xp+32){
+if(asteroids[i].y + 32 >= yp && asteroids[i].y <= yp+32){
+enemyparticles.push({x:xp+16,y:yp+16,directions:1,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:5,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:2,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:6,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:3,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:7,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:4,id:6});
+enemyparticles.push({x:xp+16,y:yp+16,directions:8,id:6});
+asteroids.splice(i,1);
+health-=1;
+explosions1.play();
+}
+}
+if(asteroids[i].y >= 480){
+asteroids.splice(i,1);
+}
+asteroids[i].angle+=1;
+}
+for(i in particles){
+ctx.beginPath();
+ctx.fillStyle = "yellow";
+ctx.fillRect(particles[i].x,particles[i].y,2,2);
+ctx.closePath();
+particles[i].y+=3;
+if(particles[i].y >= particles[i].coordinat){
+particles.splice(i,1);
+}
+}
+for(i in enemybullets){
+ctx.drawImage(enemybullet,0,0,16,16,enemybullets[i].x,enemybullets[i].y,8,8);
+if(enemybullets[i].directions == 1){
+enemybullets[i].y+=5;
+enemybullets[i].x-=5;
+}
+if(enemybullets[i].directions == 2){
+enemybullets[i].y+=5;
+}
+if(enemybullets[i].directions == 3){
+enemybullets[i].y+=5;
+enemybullets[i].x+=5;
+}
+if(enemybullets[i].x + 8 >= xp && enemybullets[i].x <= xp+32){
+if(enemybullets[i].y + 8 >= yp && enemybullets[i].y <= yp+32){
+enemybullets.splice(i,1);
+explosives.push({x:xp,y:yp,time:15,ex:0,ey:100});
+explosions1.play()
+health-=1;
+}
+}
+}
+}
+for(i in explosives){
+ctx.drawImage(explosive,explosives[i].ex,explosives[i].ey,100,100,explosives[i].x,explosives[i].y,32,32);
+if(t%1 == 0){
+explosives[i].ex+=100;
+}
+if(explosives[i].ex >= 600){
+explosives[i].ex=0;
+explosives[i].ey+=100;
+}
+if(explosives[i].ey >= 900){
+explosives.splice(i,1);
+}
+}
+ctx.beginPath();
+ctx.fillStyle = "white";
+ctx.fillRect(0,0,320,20);
+ctx.closePath();
+ctx.beginPath();
+ctx.font = "20px Serif";
+ctx.fillStyle = "black";
+ctx.fillText("Score: " + score,5,16);
+ctx.fillText("Lives: " + health,240,16);
+ctx.fillText("Time:" + time,150,16);
+ctx.closePath();
+if(win == 0){
+if(up == 1){
+if(yp-spacespeed <= 20){
+yp=yp;
+}else{
+yp-=spacespeed;
+}
+}
+if(left == 2){
+if(xp-spacespeed <= 0){
+xp=xp;
+}else{
+xp-=spacespeed;
+}
+}
+if(right == 3){
+if(xp+spacespeed >= 288){
+xp=xp;
+}else{
+xp+=spacespeed;
+}
+}
+if(down == 4){
+if(yp+spacespeed >= 448){
+yp=yp;
+}else{
+yp+=spacespeed;
+}
+}
+}
+ctx.fillStyle = "black";
+if(health <= 0){
+levels = 2;
+score = 0;
+time = 1000;
+if(t%50 == 0){
+t = 0;
+scene = -2;
+}
+}
+if(by >= 480){
+by=-480;
+}
+if(by1 >= 480){
+by1=-480;
+}
+by+=5;
+by1+=5;
+if(win == 1){
+for(i in asteroids){
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:1,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:5,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:2,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:6,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:3,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:7,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:4,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:8,id:0});
+asteroids.splice(i,1);
+explosions1.play();
+}
+for(i in particles){
+ctx.beginPath();
+ctx.fillStyle = "yellow";
+ctx.fillRect(particles[i].x,particles[i].y,2,2);
+ctx.closePath();
+particles[i].y+=3;
+if(particles[i].y >= particles[i].coordinat){
+particles.splice(i,1);
+}
+}
+for(i in enemyparticles){
+if(enemyparticles[i].id == 0){
+ctx.drawImage(particle2,0,0,8,8,enemyparticles[i].x,enemyparticles[i].y,8,8);
+}
+if(enemyparticles[i].id == 1){
+ctx.drawImage(particle1,0,0,8,8,enemyparticles[i].x,enemyparticles[i].y,8,8);
+}
+if(enemyparticles[i].directions == 1){
+enemyparticles[i].y-=10;
+}
+if(enemyparticles[i].directions == 2){
+enemyparticles[i].x-=10;
+}
+if(enemyparticles[i].directions == 3){
+enemyparticles[i].x+=10;
+}
+if(enemyparticles[i].directions == 4){
+enemyparticles[i].y+=10;
+}
+if(enemyparticles[i].directions == 5){
+enemyparticles[i].x+=10;
+enemyparticles[i].y-=10;
+}
+if(enemyparticles[i].directions == 6){
+enemyparticles[i].x+=10;
+enemyparticles[i].y+=10;
+}
+if(enemyparticles[i].directions == 7){
+enemyparticles[i].x-=10;
+enemyparticles[i].y+=10;
+}
+if(enemyparticles[i].directions == 8){
+enemyparticles[i].x-=10;
+enemyparticles[i].y-=10;
+}
+}
+yp-=4;
+if(yp+32 < 0){
+scene = 1;
+}
+}
+if(time == 0){
+win = 1;
+levels+=1;
+}
+}
+if(scene == 5){
+if(win == 0){
+ctx.clearRect(0,0,320,480);
+ctx.drawImage(background,0,0,480,320,0,by,320,480);
+if(t%firespeeds == 0){
+if(lives == 0){
+bullets.push({x:xp + 10,y:yp,distances:yp-firedistances});
+shoots.play();
+}
+}
+particles.push({x:xp+Math.random()*(30-2)+2,y:yp+32,coordinat:yp+64});
+ctx.drawImage(background,0,0,480,320,0,by1,320,480);
+ctx.drawImage(boss1,0,0,125,238,bossx,bossy,125,238);
+if(lives == 0){
+ctx.drawImage(spaceship1,0,0,16,16,xp,yp,32,32);
+}
+if(by >= 480){
+by=-480;
+}
+if(by1 >= 480){
+by1=-480;
+}
+by+=5;
+by1+=5;
+if(bossy < -40){
+bossy+=2;
+}
+ctx.beginPath();
+ctx.fillStyle = "white";
+ctx.fillRect(0,0,320,20);
+ctx.closePath();
+ctx.beginPath();
+ctx.font = "20px Serif";
+ctx.fillStyle = "black";
+ctx.fillText("Score: " + score,5,16);
+ctx.fillText("Lives: " + health,240,16);
+ctx.fillText("Hp: " + bossHP,150,16);
+ctx.closePath();
+if(win == 0){
+if(up == 1){
+if(yp-spacespeed <= 20){
+yp=yp;
+}else{
+yp-=spacespeed;
+}
+}
+if(left == 2){
+if(xp-spacespeed <= 0){
+xp=xp;
+}else{
+xp-=spacespeed;
+}
+}
+if(right == 3){
+if(xp+spacespeed >= 288){
+xp=xp;
+}else{
+xp+=spacespeed;
+}
+}
+if(down == 4){
+if(yp+spacespeed >= 448){
+yp=yp;
+}else{
+yp+=spacespeed;
+}
+}
+}
+if(bossHP <= 0){
+win = 1;
+levels+=1;
+}
+for(i in bullets){
+if(bullets[i].y <= bullets[i].distances){
+bullets.splice(i,1);
+}
+ctx.drawImage(bullet,0,0,16,16,bullets[i].x,bullets[i].y,8,8);
+bullets[i].y-=10;
+if(bossx + 125 >= bullets[i].x && bossx <= bullets[i].x+8){
+if(bossy + 238 >= bullets[i].y && bossy <= bullets[i].y+8){
+explosives.push({x:bossx + 32,y:bossy + 110,time:15,ex:0,ey:100});
+bossHP-=damage;
+bullets.splice(i,1);
+explosions.play();
+}
+}
+}
+for(i in particles){
+ctx.beginPath();
+ctx.fillStyle = "yellow";
+ctx.fillRect(particles[i].x,particles[i].y,2,2);
+ctx.closePath();
+particles[i].y+=3;
+if(particles[i].y >= particles[i].coordinat){
+particles.splice(i,1);
+}
+}
+for(i in enemybullets){
+ctx.drawImage(enemybullet,0,0,16,16,enemybullets[i].x,enemybullets[i].y,8,8);
+if(enemybullets[i].directions == 1){
+enemybullets[i].y+=5;
+enemybullets[i].x-=5;
+}
+if(enemybullets[i].directions == 2){
+enemybullets[i].y+=5;
+}
+if(enemybullets[i].directions == 3){
+enemybullets[i].y+=5;
+enemybullets[i].x+=5;
+}
+if(enemybullets[i].directions == 4){
+enemybullets[i].y+=5;
+enemybullets[i].x-=1.5;
+}
+if(enemybullets[i].directions == 5){
+enemybullets[i].y+=5;
+}
+if(enemybullets[i].directions == 6){
+enemybullets[i].y+=5;
+enemybullets[i].x+=1.5;
+}
+if(enemybullets[i].directions == 7){
+enemybullets[i].y+=5;
+enemybullets[i].x-=2;
+}
+if(enemybullets[i].directions == 8){
+enemybullets[i].y+=5;
+}
+if(enemybullets[i].directions == 10){
+enemybullets[i].y+=5;
+enemybullets[i].x+=2;
+}
+if(enemybullets[i].x + 8 >= xp && enemybullets[i].x <= xp+32){
+if(enemybullets[i].y + 8 >= yp && enemybullets[i].y <= yp+32){
+enemybullets.splice(i,1);
+explosives.push({x:xp,y:yp,time:15,ex:0,ey:100});
+explosions1.play()
+health-=1;
+}
+}
+}
+for(i in explosives){
+ctx.drawImage(explosive,explosives[i].ex,explosives[i].ey,100,100,explosives[i].x,explosives[i].y,64,64);
+if(t%1 == 0){
+explosives[i].ex+=100;
+}
+if(explosives[i].ex >= 600){
+explosives[i].ex=0;
+explosives[i].ey+=100;
+}
+if(explosives[i].ey >= 900){
+explosives.splice(i,1);
+}
+}
+if(health <= 0){
+levels = 2;
+score = 0;
+time = 1000;
+if(t%50 == 0){
+t = 0;
+scene = -2;
+}
+}
+if(bossx + 125 >= xp && bossx <= xp+32){
+if(bossy + 238 >= yp && bossy <= yp+32){
+if(t%20 == 0){
+health-=1;
+explosives.push({x:xp,y:yp,time:15,ex:0,ey:100});
+explosions1.play()
+}
+}
+}
+if(t%250 == 0){
+bosslefts = 0;
+bossrights = 0;
+bossattacks = Math.floor(Math.random()*(5-1)+1);
+bosslefts = 1;
+}
+if(bossattacks == 1){
+if(t%40 == 0){
+enemybullets.push({x:bossx+61,y:bossy+234,directions:1});
+enemybullets.push({x:bossx+61,y:bossy+234,directions:2});
+enemybullets.push({x:bossx+61,y:bossy+234,directions:3});
+}
+if(t%80 == 0){
+enemybullets.push({x:bossx+61,y:bossy+234,directions:4});
+enemybullets.push({x:bossx+61,y:bossy+234,directions:5});
+enemybullets.push({x:bossx+61,y:bossy+234,directions:6});
+}
+}
+if(bossattacks == 2){
+if(bosslefts == 1){
+bossx-=1;
+}
+if(bossrights == 1){
+bossx+=1;
+}
+if(bossx == 0){
+bosslefts = 0;
+bossrights = 1;
+}
+if(bossx + 125 >= 320){
+bosslefts = 1;
+bossrights = 0;
+}
+if(t%(ateroidsspawn + 10) == 0){
+enemybullets.push({x:bossx + 61,y:bossy+234,directions:2});
+}
+}
+if(bossattacks == 3){
+if(t%40 == 0){
+enemybullets.push({x:bossx+61,y:bossy+234,directions:1});
+enemybullets.push({x:bossx+61,y:bossy+234,directions:2});
+enemybullets.push({x:bossx+61,y:bossy+234,directions:3});
+}
+if(t%80 == 0){
+enemybullets.push({x:bossx+61,y:bossy+234,directions:7});
+enemybullets.push({x:bossx+61,y:bossy+234,directions:8});
+enemybullets.push({x:bossx+61,y:bossy+234,directions:10});
+}
+}
+}
+if(win == 1){
+ctx.clearRect(0,0,320,480);
+ctx.drawImage(background,0,0,480,320,0,by,320,480);
+ctx.drawImage(background,0,0,480,320,0,by1,320,480);
+ctx.drawImage(spaceship1,0,0,16,16,xp,yp,32,32);
+ctx.drawImage(boss1,0,0,125,238,bossx,bossy,125,238);
+if(t%10 == 0){
+explosives.push({x:Math.floor(Math.random()*(bossx+125-bossx)+bossx),y:Math.floor(Math.random()*(bossy+125-bossy)+bossy),time:15,ex:0,ey:100});
+explosions.play();
+}
+if(by >= 480){
+by=-480;
+}
+if(by1 >= 480){
+by1=-480;
+}
+by+=5;
+by1+=5;
+for(i in asteroids){
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:1,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:5,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:2,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:6,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:3,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:7,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:4,id:0});
+enemyparticles.push({x:asteroids[i].x+16,y:asteroids[i].y+16,directions:8,id:0});
+asteroids.splice(i,1);
+explosions1.play();
+}
+for(i in particles){
+ctx.beginPath();
+ctx.fillStyle = "yellow";
+ctx.fillRect(particles[i].x,particles[i].y,2,2);
+ctx.closePath();
+particles[i].y+=3;
+if(particles[i].y >= particles[i].coordinat){
+particles.splice(i,1);
+}
+}
+for(i in explosives){
+ctx.drawImage(explosive,explosives[i].ex,explosives[i].ey,100,100,explosives[i].x,explosives[i].y,64,64);
+if(t%1 == 0){
+explosives[i].ex+=100;
+}
+if(explosives[i].ex >= 600){
+explosives[i].ex=0;
+explosives[i].ey+=100;
+}
+if(explosives[i].ey >= 900){
+explosives.splice(i,1);
+}
+}
+yp-=4;
+if(yp+32 < 0){
+scene = 1;
+}
+}
+}
+t+=1;
+time-=1;
+}
+setInterval(game,20);
+</script>
+</body>
+</html>
